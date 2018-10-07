@@ -40,9 +40,10 @@ void step_motor()
 {
 	if(step_count!=0){
 		if(step_count%2==0)
-		digitalWrite(Step,HIGH);
+		{digitalWrite(Step,HIGH);}
 		else
-		digitalWrite(Step,LOW);
+		{digitalWrite(Step,LOW);}
+		
 		step_count--;
 	}
 }
@@ -54,11 +55,12 @@ void setup()
 	Wire.onRequest(requestEvent);
 	pinMode(Step, OUTPUT); // Step
 	pinMode(dir, OUTPUT); // Dir
-	Serial.begin(9600);
+	digitalWrite(dir,HIGH);
+	Serial.begin(115200);
 	delay(1000);
 	
-	//定时器初始化
-	tc1.setMode("CTC",1);
+	//#定时器初始化
+	tc1.setMode("CTC",0.5);
 	tc1.attachInterrupt(step_motor);
 }
 
@@ -66,103 +68,31 @@ void loop()
 {
 	int p = analogRead(Read1);
 	int q = analogRead(Read2);
+
+//step_count = 100;
 	
-	//如果是收白球
+	//#如果是收白球
 	if (Q == 0)
 	{
 		digitalWrite(Wled, HIGH);
 		digitalWrite(Bled, LOW);
-		if (p > 500)
-		flag = true;
-		if (flag == false)
-		{
-			digitalWrite(dir, LOW);
-			digitalWrite(Step, HIGH); // Output high
-			delayMicroseconds(8000); // Wait 1/2 a ms
-			digitalWrite(Step, LOW); // Output low
-			delayMicroseconds(8000); // Wait 1/2 a ms
-		}
-		else
-		{
-			if (p > 500)
-			{
-				delay(200);
-				if (q > 450)
-				{
-					digitalWrite(dir, LOW);
-					step_count = 122;
-// 					for (x = 0; x < 67; x++)
-// 					{
-// 						digitalWrite(Step, HIGH); // Output high
-// 						delayMicroseconds(5000); // Wait 1/2 a ms
-// 						digitalWrite(Step, LOW); // Output low
-// 						delayMicroseconds(5000); // Wait 1/2 a ms
-// 					}
-					w++;
-				}
-				if (q < 450)
-				{
-					digitalWrite(dir, HIGH);
-					step_count = 122;
-// 					for (x = 0; x < 67; x++)
-// 					{
-// 						digitalWrite(Step, HIGH); // Output high
-// 						delayMicroseconds(5000); // Wait 1/2 a ms
-// 						digitalWrite(Step, LOW); // Output low
-// 						delayMicroseconds(5000); // Wait 1/2 a ms
-// 					}
-				}
-			}
-		}
-		g = w;
+		
+		//步进电机运动
+		wihteGold();
 	}
-	//如果是收黑球
+	
+	//#如果是收黑球
 	if (Q == 1)
 	{
 		digitalWrite(Bled, HIGH);
 		digitalWrite(Wled, LOW);
-		if (p > 500)
-		flag = true;
-		if (flag == false)
-		{
-			digitalWrite(dir, LOW);
-			digitalWrite(Step, HIGH); // Output high
-			delayMicroseconds(8000); // Wait 1/2 a ms
-			digitalWrite(Step, LOW); // Output low
-			delayMicroseconds(8000); // Wait 1/2 a ms
-		}
-		else
-		{
-			if (p > 500)
-			{
-				if (q < 450)
-				{
-					digitalWrite(dir, LOW);
-					for (x = 0; x < 67; x++)
-					{
-						digitalWrite(Step, HIGH); // Output high
-						delayMicroseconds(5000); // Wait 1/2 a ms
-						digitalWrite(Step, LOW); // Output low
-						delayMicroseconds(5000); // Wait 1/2 a ms
-					}
-					b++;
-				}
-				if (q > 450)
-				{
-					digitalWrite(dir, HIGH);
-					for (x = 0; x < 67; x++)
-					{
-						digitalWrite(Step, HIGH); // Output high
-						delayMicroseconds(5000); // Wait 1/2 a ms
-						digitalWrite(Step, LOW); // Output low
-						delayMicroseconds(5000); // Wait 1/2 a ms
-					}
-				}
-			}
-		}
-		g = b;
+		
+		//步进电机运动
+		blackGold();
 	}
-	Serial.print("q:");
+	
+	//串口调试
+// 	Serial.print("q:");
 	Serial.print(q);
 	Serial.print("p:");
 	Serial.print(p);
@@ -170,13 +100,6 @@ void loop()
 	Serial.print(Q);
 	Serial.print("g:");
 	Serial.println(g);
-	/*Serial.write(Q);
-	Serial.write("B:");
-	Serial.write(b);
-	Serial.write("W:");
-	Serial.write(w);
-	Serial.write('\n');
-	delay(500);*/
 }
 void receiveEvent(int howMany)
 {
@@ -184,68 +107,56 @@ void receiveEvent(int howMany)
 	{
 		Q = Wire.read();
 	}
-	/*Serial.print("Q:");
-	Serial.println(Q);*/
 }
-void requestEvent() {
-	Wire.write(g); // respond with message of 6 bytes
-	// as expected by master
+
+void requestEvent()
+{
+	Wire.write(g);
 }
+
 void wihteGold()
 {
+	//刚开始没球就一直转
 	if (p > 500)
 	flag = true;
+	
 	if (flag == false)
 	{
-		digitalWrite(dir, LOW);
-		digitalWrite(Step, HIGH); // Output high
-		delayMicroseconds(8000); // Wait 1/2 a ms
-		digitalWrite(Step, LOW); // Output low
-		delayMicroseconds(8000); // Wait 1/2 a ms
+		step_count = 2;
 	}
 	else
 	{
 		if (p > 500)
 		{
+			delay(200);
+			//收到白球
 			if (q > 450)
 			{
 				digitalWrite(dir, LOW);
-				for (x = 0; x < 67; x++)
-				{
-					digitalWrite(Step, HIGH); // Output high
-					delayMicroseconds(5000); // Wait 1/2 a ms
-					digitalWrite(Step, LOW); // Output low
-					delayMicroseconds(5000); // Wait 1/2 a ms
-				}
+				step_count = 122;
 				w++;
 			}
+			//收到黑球
 			if (q < 450)
 			{
 				digitalWrite(dir, HIGH);
-				for (x = 0; x < 67; x++)
-				{
-					digitalWrite(Step, HIGH); // Output high
-					delayMicroseconds(5000); // Wait 1/2 a ms
-					digitalWrite(Step, LOW); // Output low
-					delayMicroseconds(5000); // Wait 1/2 a ms
-				}
-				w++;
+				step_count = 122;
 			}
-			//delay(100);
 		}
 	}
+	
+	//赋值得分球数量
+	g = w;
 }
 void blackGold()
 {
+	//刚上电没球就一直转
 	if (p > 500)
 	flag = true;
+
 	if (flag == false)
 	{
-		digitalWrite(dir, LOW);
-		digitalWrite(Step, HIGH); // Output high
-		delayMicroseconds(8000); // Wait 1/2 a ms
-		digitalWrite(Step, LOW); // Output low
-		delayMicroseconds(8000); // Wait 1/2 a ms
+		step_count = 2;
 	}
 	else
 	{
@@ -254,28 +165,16 @@ void blackGold()
 			if (q < 450)
 			{
 				digitalWrite(dir, LOW);
-				for (x = 0; x < 67; x++)
-				{
-					digitalWrite(Step, HIGH); // Output high
-					delayMicroseconds(5000); // Wait 1/2 a ms
-					digitalWrite(Step, LOW); // Output low
-					delayMicroseconds(5000); // Wait 1/2 a ms
-				}
+				step_count = 122;
 				b++;
 			}
 			if (q > 450)
 			{
 				digitalWrite(dir, HIGH);
-				for (x = 0; x < 67; x++)
-				{
-					digitalWrite(Step, HIGH); // Output high
-					delayMicroseconds(5000); // Wait 1/2 a ms
-					digitalWrite(Step, LOW); // Output low
-					delayMicroseconds(5000); // Wait 1/2 a ms
-				}
-				b++;
+				step_count = 122;
 			}
 		}
 	}
+	g = b;
 }
 

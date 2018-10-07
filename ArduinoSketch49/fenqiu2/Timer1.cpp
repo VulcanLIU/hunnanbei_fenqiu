@@ -18,14 +18,14 @@ static void nothing(void) {
 
 static volatile voidFuncPtr _intFunc = nothing;
 
-int Timer1::calculate(int _prescaler,int _time)
+int Timer1::calculate(int _prescaler,float _time)
 {
 	int _OCR1A = _time*(F_CPU/1000)/_prescaler;
 	oc = _OCR1A;
 	return _OCR1A;
 }
 
-int Timer1::select_prescaler(int _time)
+int Timer1::select_prescaler(float _time)
 {
 	int _prescaler_table[5] = {1,8,64,256,1024};
 	int index = 0;
@@ -52,7 +52,7 @@ Timer1::Timer1()
 	SREG |=0x80;//打开全局中断
 } //Timer1
 
-Timer1::Timer1(String _mode,int _time)
+Timer1::Timer1(String _mode,float _time)
 {
 	
 	setMode(_mode,_time);
@@ -60,7 +60,7 @@ Timer1::Timer1(String _mode,int _time)
 	# warning "Mode set completely!"
 } //Timer1
 
-void Timer1::setMode(String _mode,int _time)
+void Timer1::setMode(String _mode,float _time)
 {
 	this->Mode = _mode;
 	//自动选择分频因子
