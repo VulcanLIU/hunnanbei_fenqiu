@@ -30,6 +30,9 @@ int Read2 = A1;                             //判断球的颜色
 int Q =0;
 int b = 0, w = 0;
 int g = 0;
+int MS1 = 8;
+int MS2 = 7;
+int MS3 = 6;
 
 boolean flag = false;
 
@@ -38,14 +41,14 @@ int step_count = 0;
 //定时器中断
 void step_motor()
 {
-	if(step_count!=0){
-		if(step_count%2==0)
-		{digitalWrite(Step,HIGH);}
-		else
-		{digitalWrite(Step,LOW);}
-		
-		step_count--;
+	for(int i = 0;i<=100;i++)
+	{
+			digitalWrite(Step,HIGH);
+			delayMicroseconds(500);
+			digitalWrite(Step,LOW);
+			delayMicroseconds(500);
 	}
+
 }
 
 void setup()
@@ -56,12 +59,18 @@ void setup()
 	pinMode(Step, OUTPUT); // Step
 	pinMode(dir, OUTPUT); // Dir
 	digitalWrite(dir,HIGH);
+	digitalWrite(Step,LOW);
+	
+	//pinMode(MS1,INPUT_PULLUP);
+	//pinMode(MS2,INPUT_PULLUP);
+	//pinMode(MS3,INPUT_PULLUP);
+	
 	Serial.begin(115200);
 	delay(1000);
 	
 	//#定时器初始化
-	tc1.setMode("CTC",0.5);
-	tc1.attachInterrupt(step_motor);
+	//tc1.setMode("CTC",2000);
+	//tc1.attachInterrupt(step_motor);
 }
 
 void loop()
@@ -69,8 +78,10 @@ void loop()
 	int p = analogRead(Read1);
 	int q = analogRead(Read2);
 
+step_motor();
+delay(44000);
 //step_count = 100;
-	
+		
 	//#如果是收白球
 	if (Q == 0)
 	{
