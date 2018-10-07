@@ -30,9 +30,6 @@ int Read2 = A1;                             //判断球的颜色
 int Q =0;
 int b = 0, w = 0;
 int g = 0;
-int MS1 = 8;
-int MS2 = 7;
-int MS3 = 6;
 
 boolean flag = false;
 
@@ -41,6 +38,7 @@ int step_count = 0;
 //定时器中断
 void step_motor()
 {
+<<<<<<< HEAD
 <<<<<<< HEAD
 	for(int i = 0;i<=100;i++)
 	{
@@ -56,8 +54,16 @@ void step_motor()
 		digitalWrite(Step,LOW);
 		step_count--;
 >>>>>>> parent of c14ab71... 测出合适脉宽
+=======
+	if(step_count!=0){
+		if(step_count%2==0)
+		{digitalWrite(Step,HIGH);}
+		else
+		{digitalWrite(Step,LOW);}
+		
+		step_count--;
+>>>>>>> parent of 52070c5... hhh
 	}
-
 }
 
 void setup()
@@ -69,16 +75,11 @@ void setup()
 	pinMode(dir, OUTPUT); // Dir
 <<<<<<< HEAD
 	digitalWrite(dir,HIGH);
-	digitalWrite(Step,LOW);
-	
-	//pinMode(MS1,INPUT_PULLUP);
-	//pinMode(MS2,INPUT_PULLUP);
-	//pinMode(MS3,INPUT_PULLUP);
-	
 	Serial.begin(115200);
 	delay(1000);
 	
 	//#定时器初始化
+<<<<<<< HEAD
 	//tc1.setMode("CTC",2000);
 	//tc1.attachInterrupt(step_motor);
 =======
@@ -89,6 +90,10 @@ void setup()
 	tc1.setMode("CTC",1);
 	tc1.attachInterrupt(step_motor);
 >>>>>>> parent of c14ab71... 测出合适脉宽
+=======
+	tc1.setMode("CTC",0.5);
+	tc1.attachInterrupt(step_motor);
+>>>>>>> parent of 52070c5... hhh
 }
 
 void loop()
@@ -97,10 +102,8 @@ void loop()
 	int q = analogRead(Read2);
 <<<<<<< HEAD
 
-step_motor();
-delay(44000);
 //step_count = 100;
-		
+	
 	//#如果是收白球
 =======
 	
