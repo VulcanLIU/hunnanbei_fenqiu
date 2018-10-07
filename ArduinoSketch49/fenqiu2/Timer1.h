@@ -27,14 +27,14 @@ private:
 //functions
 public:
 	Timer1();
-	Timer1(String _mode,float _time);
-	void setMode(String _mode,float _time);
+	Timer1(String _mode,int _time);
+	void setMode(String _mode,int _time);
 	void attachInterrupt(void (*userFunc)(void));
 	~Timer1();
 protected:
 private:
-	int calculate(int _prescaler,float _time);
-    int select_prescaler(float _time);
+	int calculate(int _prescaler,int _time);
+    int select_prescaler(int _time);
 }; //Timer1
 
 #endif //__TIMER1_H__
